@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Developers\Commands\LoginDeveleoper\" />
+    <Folder Include="Features\Developers\Models\" />
+    <Folder Include="Features\Developers\Queries\" />
+    <Folder Include="Features\Developers\Constants\" />
+    <Folder Include="Features\GithubProfiles\Models\" />
+    <Folder Include="Features\GithubProfiles\Queries\" />
+    <Folder Include="Features\GithubProfiles\Constants\" />
     <Folder Include="Features\ProgrammingLanguages\Constants\" />
     <Folder Include="Features\Technologies\Constants\" />
   </ItemGroup>

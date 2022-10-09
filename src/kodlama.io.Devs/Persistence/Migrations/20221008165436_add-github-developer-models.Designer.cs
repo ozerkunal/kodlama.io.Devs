@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence.Contexts;
 
@@ -11,9 +12,10 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(BaseDbContext))]
-    partial class BaseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221008165436_add-github-developer-models")]
+    partial class addgithubdevelopermodels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,7 +169,7 @@ namespace Persistence.Migrations
                     b.ToTable("UserOperationClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.GitHubProfile", b =>
+            modelBuilder.Entity("Domain.Entities.GithubAddress", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -180,16 +182,16 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("DeveloperId");
 
-                    b.Property<string>("ProfileUrl")
+                    b.Property<string>("GithubUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ProfileUrl");
+                        .HasColumnName("GithubUrl");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DeveloperId");
 
-                    b.ToTable("GitHubProfiles", (string)null);
+                    b.ToTable("GithubAddresses", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.ProgrammingLanguage", b =>
@@ -299,10 +301,10 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.GitHubProfile", b =>
+            modelBuilder.Entity("Domain.Entities.GithubAddress", b =>
                 {
                     b.HasOne("Domain.Entities.Developer", "Developer")
-                        .WithMany("GitHubProfiles")
+                        .WithMany("GithubAddresses")
                         .HasForeignKey("DeveloperId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -344,7 +346,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Developer", b =>
                 {
-                    b.Navigation("GitHubProfiles");
+                    b.Navigation("GithubAddresses");
                 });
 #pragma warning restore 612, 618
         }

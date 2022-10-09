@@ -17,7 +17,9 @@ namespace Persistence.Contexts
         protected IConfiguration Configuration { get; set; }
         public DbSet<ProgrammingLanguage> ProgrammingLanguages { get; set; }
         public DbSet<Technology> Technologies { get; set; }
+        public DbSet<GithubProfile> GithubProfiles { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Developer> Developers { get; set; }
         public DbSet<OperationClaim> OperationClaims { get; set; }
         public DbSet<UserOperationClaim> UserOperationClaims { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
@@ -37,6 +39,9 @@ namespace Persistence.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            //modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
             modelBuilder.Entity<ProgrammingLanguage>(a =>
             {
                 a.ToTable("ProgrammingLanguages").HasKey(k => k.Id);
@@ -54,6 +59,15 @@ namespace Persistence.Contexts
                 a.HasOne(p => p.ProgrammingLanguage);
             });
 
+            modelBuilder.Entity<GithubProfile>(p =>
+            {
+                p.ToTable("GithubProfiles").HasKey(k => k.Id);
+                p.Property(p => p.Id).HasColumnName("Id");
+                p.Property(p => p.DeveloperId).HasColumnName("DeveloperId");
+                p.Property(p => p.ProfileUrl).HasColumnName("ProfileUrl");
+                p.HasOne(p => p.Developer);
+            });
+
             modelBuilder.Entity<User>(a =>
             {
                 a.ToTable("Users").HasKey(k => k.Id);
@@ -66,6 +80,12 @@ namespace Persistence.Contexts
                 a.Property(p => p.AuthenticatorType).HasColumnName("AuthenticatorType");
                 a.HasMany(p => p.UserOperationClaims);
                 a.HasMany(p => p.RefreshTokens);
+            });
+
+            modelBuilder.Entity<Developer>(a =>
+            {
+                a.ToTable("Developers");
+                a.HasMany(p => p.GithubProfiles);
             });
 
             modelBuilder.Entity<OperationClaim>(a =>

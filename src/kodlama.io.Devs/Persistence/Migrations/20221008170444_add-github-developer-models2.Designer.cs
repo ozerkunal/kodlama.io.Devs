@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence.Contexts;
 
@@ -11,9 +12,10 @@ using Persistence.Contexts;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(BaseDbContext))]
-    partial class BaseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221008170444_add-github-developer-models2")]
+    partial class addgithubdevelopermodels2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,6 +110,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("AuthenticatorType");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -139,6 +145,8 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
                 });
 
             modelBuilder.Entity("Core.Security.Entities.UserOperationClaim", b =>
@@ -167,29 +175,26 @@ namespace Persistence.Migrations
                     b.ToTable("UserOperationClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.GitHubProfile", b =>
+            modelBuilder.Entity("Domain.Entities.GithubAddress", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("Id");
+                        .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("DeveloperId")
-                        .HasColumnType("int")
-                        .HasColumnName("DeveloperId");
+                        .HasColumnType("int");
 
-                    b.Property<string>("ProfileUrl")
+                    b.Property<string>("GithubUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ProfileUrl");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("DeveloperId");
 
-                    b.ToTable("GitHubProfiles", (string)null);
+                    b.ToTable("GithubAddresses");
                 });
 
             modelBuilder.Entity("Domain.Entities.ProgrammingLanguage", b =>
@@ -266,7 +271,7 @@ namespace Persistence.Migrations
                 {
                     b.HasBaseType("Core.Security.Entities.User");
 
-                    b.ToTable("Developers", (string)null);
+                    b.HasDiscriminator().HasValue("Developer");
                 });
 
             modelBuilder.Entity("Core.Security.Entities.RefreshToken", b =>
@@ -299,10 +304,10 @@ namespace Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Entities.GitHubProfile", b =>
+            modelBuilder.Entity("Domain.Entities.GithubAddress", b =>
                 {
                     b.HasOne("Domain.Entities.Developer", "Developer")
-                        .WithMany("GitHubProfiles")
+                        .WithMany("GithubAddresses")
                         .HasForeignKey("DeveloperId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -321,15 +326,6 @@ namespace Persistence.Migrations
                     b.Navigation("ProgrammingLanguage");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Developer", b =>
-                {
-                    b.HasOne("Core.Security.Entities.User", null)
-                        .WithOne()
-                        .HasForeignKey("Domain.Entities.Developer", "Id")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Core.Security.Entities.User", b =>
                 {
                     b.Navigation("RefreshTokens");
@@ -344,7 +340,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entities.Developer", b =>
                 {
-                    b.Navigation("GitHubProfiles");
+                    b.Navigation("GithubAddresses");
                 });
 #pragma warning restore 612, 618
         }
